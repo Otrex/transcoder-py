@@ -1,3 +1,21 @@
+#!/usr/bin
+
+import subprocess
+import requests
+
+space = "https://dumo-cloud-lms.fra1.digitaloceanspaces.com"
+downloadPath = 'downloadedVideos'
+transcodedPath = 'transcodedVideos'
+
+def shell(*args):
+  run = subprocess.run(list(args), stdout=subprocess.PIPE, check=True)
+  if run.stderr != None: print(run.stderr)
+  print('--------------------------Task Complete-------------------------------')
+
+def download (url):
+  shell('wget', '-P', downloadPath, f"{space}/{url}")
+  print('--------------------------Download Complete---------------------------')
+
 videos = [
   "lecture-contents/5aef4f73-c79c-4f57-8abd-84cf553cb28b",
   "lecture-contents/42e2bc74-2bd0-4f35-9132-ea29a5cfab44",
@@ -8,4 +26,8 @@ videos = [
   "lecture-contents/e4e3ec62-ab03-46bb-b45a-61c2a29fcb4d",
   "lecture-contents/34b94cd6-503e-417d-8f0c-3d1e32379d63"
 ]
-space = "https://dumo-cloud-lms.fra1.digitaloceanspaces.com"
+
+for url in videos:
+  download(url)
+
+shell("sh", 'trancoderv2.sh', downloadPath , transcodedPath )
